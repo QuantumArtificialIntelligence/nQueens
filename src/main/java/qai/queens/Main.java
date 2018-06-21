@@ -102,9 +102,173 @@ class Main {
     }
 
     private static boolean noStraightLine(int r, int c, boolean[][] pos) {
+        // Check Upper Left
+
+        int ir = r - 1;
+        int ic = c - 1;
+
+        int rcDiff = Math.abs(r - c);
+
+        int previous1 = -1;
+        int previous2 = -1;
+
+        boolean clear = true;
+
+        int maxCols = pos[0].length;
+        int maxRows = pos.length;
+
+        int aC = ic;
+
+        while(ir >= 0 && ic >= 0) {
+            if(pos[ir][ic]) {
+                if(previous1 == -1) {
+                    previous1 = Math.abs(ir - ic);
+                    aC = ic - 1;
+                    ir--;
+                } else {
+                    previous2 = Math.abs(ir - ic);
+                    // we found the previous 2, so exit loop
+                    ir = -1;
+                    ic = -1;
+                }
+            }
+            ic--;
+            if(ic == -1) {
+                ic = aC;
+                ir--;
+            }
+        }
+//System.out.println("aPrevious1/2 " + previous1 + " " + previous2);
+
+        if(previous1 != -1 && previous2 != -1) {
+            if(Math.abs(previous1 - rcDiff) == Math.abs(previous2 - previous1)) {
+                // If we are here it means we found a straight line.. not desired :(
+                clear = false;
+//                System.out.println("detected1!");
+            }
+        }
+
+        // ====== Going now through Col first
+
+        previous1 = -1;
+        previous2 = -1;
+
+        ir = r - 1;
+        ic = c - 1;
+
+        int aR = ir;
+
+        while(ir >= 0 && ic >= 0 && clear) {
+            if(pos[ir][ic]) {
+                if(previous1 == -1) {
+                    previous1 = Math.abs(ir - ic);
+                    aR = ir - 1;
+                    ic--;
+                } else {
+                    previous2 = Math.abs(ir - ic);
+                    // we found the previous 2, so exit loop
+                    ir = -1;
+                    ic = -1;
+                }
+            }
+            ir--;
+            if(ir == -1) {
+                ir = aR;
+                ic--;
+            }
+        }
+//        System.out.println("aaPrevious1/2 " + previous1 + " " + previous2);
+
+        if(previous1 != -1 && previous2 != -1) {
+            if(Math.abs(previous1 - rcDiff) == Math.abs(previous2 - previous1)) {
+                // If we are here it means we found a straight line.. not desired :(
+                clear = false;
+//                System.out.println("detected2!");
+            }
+        }
 
 
-        return true;
+        // We check upper right
+
+        previous1 = -1;
+        previous2 = -1;
+
+        ir = r - 1;
+        ic = c + 1;
+
+        aC = ic;
+
+        while((ir >= 0 && ic < maxCols) && clear) {
+            if(pos[ir][ic]) {
+                if(previous1 == -1) {
+                    previous1 = Math.abs(ir - (ic + ((ic-c) * 2)));
+                    aC = ic + 1;
+                    ir--;
+                } else {
+                    previous2 = Math.abs(ir - ic);
+                    // we found the previous 2, so exit loop
+                    ir = -1;
+                    continue;
+                }
+            }
+            ic++;
+            if(ic == maxCols) {
+                ic = aC;
+                ir--;
+            }
+        }
+
+        int upperRcDiff = Math.abs(r - (((ic - c) * 2) + c));
+
+        if(previous1 != -1 && previous2 != -1) {
+            if(Math.abs(previous1 - upperRcDiff) == Math.abs(previous2 - previous1)) {
+                // If we are here it means we found a straight line.. not desired :(
+                clear = false;
+//                System.out.println("detected3!");
+            }
+        }
+
+        // == Through Col first
+
+        previous1 = -1;
+        previous2 = -1;
+
+        ir = r - 1;
+        ic = c + 1;
+
+        aR = ir;
+
+        while((ir >= 0 && ic < maxRows) && clear) {
+            if(pos[ir][ic]) {
+                if(previous1 == -1) {
+                    previous1 = Math.abs(ir - (ic + ((ic-c) * 2)));
+                    aR = ir - 1;
+                    ic++;
+                } else {
+                    previous2 = Math.abs(ir - ic);
+                    // we found the previous 2, so exit loop
+                    ir = -1;
+                }
+            }
+            ir--;
+            if(ir == -1) {
+                ir = aR;
+                ic++;
+            }
+        }
+
+        upperRcDiff = Math.abs(r - (((ic - c) * 2) + c));
+//        System.out.println("bPrevious1/2 " + previous1 + " " + previous2);
+        if(previous1 != -1 && previous2 != -1) {
+            if(Math.abs(previous1 - upperRcDiff) == Math.abs(previous2 - previous1)) {
+                // If we are here it means we found a straight line.. not desired :(
+                clear = false;
+//                System.out.println("detected4!");
+            }
+        }
+
+
+        return clear;
     }
 
     private static boolean diagonalsClear(int r, int c, boolean[][] pos) {
