@@ -1,0 +1,1 @@
+java -jar build/libs/qai-queens-1.0-QUEENSHOT.jar "$@"
